@@ -1,0 +1,56 @@
+
+version: '2.1'
+
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "8091:80"
+        volumes:
+            - ./data/www:/code
+            - ./data/etc/nginx/conf.d:/etc/nginx/conf.d
+            - ./data/var/log/nginx:/var/log/nginx
+            - "phpsocket:/var/run"
+        networks:
+            - code-network
+    php:
+        build: php
+        ports:
+            - "8093:9000"
+        volumes:
+            - ./data/www:/code
+            - ./data/usr/local/etc:/usr/local/etc
+            - "phpsocket:/var/run"
+            - "mysqlsock:/var/run/mysqld"
+        networks:
+            - code-network
+        links:
+            - db
+            - redis
+    redis:
+        image: redis:4.0.1
+        ports:
+            - "8092:6379"
+        networks:
+            - code-network
+    db:
+        image: "mysql:5.7.15"
+        networks:
+            - code-network
+        environment:
+            MYSQL_ROOT_PASSWORD: dfere*&SDFFHIWER65
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        volumes:
+            - ./data/var/mysql:/var/lib/mysql
+            - "mysqlsock:/var/run/mysqld"
+        ports:
+          - "8094:3306"
+
+networks:
+    code-network:
+        driver: bridge
+
+volumes:
+    phpsocket:
+    mysqlsock:
