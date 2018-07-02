@@ -23,6 +23,11 @@
 ```
 1.docker-compose build
 2.docker-compose up -d (这一步会启动docker)
+3.如果在 docker-compose build这一步报错，请注释/php/Dockerfile文件内的
+#RUN pecl install igbinary \
+#	&& pecl install redis-4.0.1 \
+#    && docker-php-ext-enable igbinary redis 
+。然后在 docker-compose build。通过之后再 docker-compose up -d。能正常启动之后在 docker-compose stop ，docker-compose rm。取消注释。在 docker-compose build
 ```
 
 ## 注意事项
